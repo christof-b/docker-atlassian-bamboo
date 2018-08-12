@@ -39,7 +39,7 @@ EXPOSE 8085 54663
 # Set volume mount points for installation and home directory. Changes to the
 # home directory needs to be persisted as well as parts of the installation
 # directory due to eg. logs.
-VOLUME ["/var/atlassian/bamboo","/opt/atlassian/bamboo/logs"]
+VOLUME ["/var/atlassian/bamboo", "/var/atlassian/bamboo/caches/indexes", "/opt/atlassian/bamboo/logs"]
 
 # Set the default working directory as the Bamboo home directory.
 WORKDIR /var/atlassian/bamboo
