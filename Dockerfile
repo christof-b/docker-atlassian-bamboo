@@ -10,13 +10,9 @@ ENV BAMBOO_VERSION  6.6.1
 RUN set -x \
     && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat \
     && mkdir -p               "${BAMBOO_HOME}/lib" \
-    && chmod -R 700           "${BAMBOO_HOME}" \
-    && chown -R daemon:daemon "${BAMBOO_HOME}" \
     && mkdir -p               "${BAMBOO_INSTALL}" \
     && curl -Ls               "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${BAMBOO_VERSION}.tar.gz" | tar -zx --directory  "${BAMBOO_INSTALL}" --strip-components=1 --no-same-owner \
     && curl -Ls                "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.40.tar.gz" | tar -xz --directory "${BAMBOO_INSTALL}/lib" --strip-components=1 --no-same-owner "mysql-connector-java-5.1.40/mysql-connector-java-5.1.40-bin.jar" \
-    && chmod -R 700           "${BAMBOO_INSTALL}" \
-    && chown -R daemon:daemon "${BAMBOO_INSTALL}" \
     && sed --in-place         's/^# umask 0027$/umask 0027/g' "${BAMBOO_INSTALL}/bin/setenv.sh" \
     && xmlstarlet             ed --inplace \
         --delete              "Server/Service/Engine/Host/@xmlValidation" \
@@ -28,8 +24,15 @@ RUN set -x \
 # Use the default unprivileged account. This could be considered bad practice
 # on systems where multiple processes end up being executed by 'daemon' but
 # here we only ever run one process anyway.
-USER daemon:daemon
+RUN adduser -D -G root -g "ROS User" rosuser \
+    && chmod -R 770           "${BAMBOO_HOME}" \
+    && chown -R rosuser:root  "${BAMBOO_HOME}" \
+    && chmod -R 770            "${BAMBOO_INSTALL}" \
+    && chown -R rosuser:root  "${BAMBOO_INSTALL}" 
 
+USER rosuser
+    
+    
 # Expose default HTTP and SSH ports.
 EXPOSE 8085 54663
 
