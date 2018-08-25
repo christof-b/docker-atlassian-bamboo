@@ -5,9 +5,12 @@ ENV BAMBOO_HOME     /var/atlassian/bamboo
 ENV BAMBOO_INSTALL  /opt/atlassian/bamboo
 ENV BAMBOO_VERSION  6.6.1
 
+ENV TZ			  CET-2CEDT-2
+
 # Install Atlassian Bamboo and helper tools and setup initial home
 # directory structure.
 RUN set -x \
+	&& echo ${TZ} > /etc/TZ \
     && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat \
     && mkdir -p               "${BAMBOO_HOME}/lib" \
     && mkdir -p               "${BAMBOO_INSTALL}" \
