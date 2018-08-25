@@ -12,7 +12,7 @@ ENV TZ			  CET-2CEDT-2
 RUN set -x \
 	&& echo ${TZ} > /etc/TZ \
 	&& apk update \
-    && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat \
+    && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat apr-util apr-dev openssl openssl-dev gcc musl-dev make \
     && mkdir -p               "${BAMBOO_HOME}/lib" \
     && mkdir -p               "${BAMBOO_INSTALL}" \
     && curl -Ls               "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${BAMBOO_VERSION}.tar.gz" | tar -zx --directory  "${BAMBOO_INSTALL}" --strip-components=1 --no-same-owner \
@@ -22,7 +22,11 @@ RUN set -x \
         --delete              "Server/Service/Engine/Host/@xmlValidation" \
         --delete              "Server/Service/Engine/Host/@xmlNamespaceAware" \
                               "${BAMBOO_INSTALL}/conf/server.xml" \
-    && touch -d "@0"          "${BAMBOO_INSTALL}/conf/server.xml"
+    && touch -d "@0"          "${BAMBOO_INSTALL}/conf/server.xml" \
+    && tar -xzvf ${BAMBOO_INSTALL}/bin/tomcat-native.tar.gz -C /tmp \
+    && cd /tmp/tomcat-native-1.2.7-src/native && ./configure --with-apr=/usr/bin/apr-1-config --with-java-home=/usr/lib/jvm/java-1.8-openjdk --with-ssl=yes --prefix=/usr && make && make install \
+    && rm -r -f /tmp/tomcat-native-1.2.7-src \
+    && apk del apr-dev openssl-dev gcc musl-dev make
 
 
 # Use the default unprivileged account. This could be considered bad practice
