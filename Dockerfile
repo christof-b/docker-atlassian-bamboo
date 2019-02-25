@@ -12,7 +12,7 @@ ENV TZ			  CET-2CEDT-2
 RUN set -x \
     && echo ${TZ} > /etc/TZ \
     && apk update \
-    && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat apr-util apr-dev openssl openssl-dev gcc musl-dev make \
+    && apk add --no-cache curl xmlstarlet git openssh bash ttf-dejavu libc6-compat apr-util apr-dev openssl openssl-dev gcc musl-dev make clamav-daemon \
     && mkdir -p               "${BAMBOO_HOME}/lib" \
     && mkdir -p               "${BAMBOO_INSTALL}" \
     && curl -Ls               "https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-${BAMBOO_VERSION}.tar.gz" | tar -zx --directory  "${BAMBOO_INSTALL}" --strip-components=1 --no-same-owner \
