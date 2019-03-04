@@ -53,6 +53,9 @@ VOLUME ["/var/atlassian/bamboo", "/opt/atlassian/bamboo/logs"]
 # Set the default working directory as the Bamboo home directory.
 WORKDIR /var/atlassian/bamboo
 
+# Add freshclam config
+COPY "freshclam.conf" "/etc/clamav/"
+
 COPY "docker-entrypoint.sh" "/"
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
